@@ -5,4 +5,6 @@
 class TextureManager {
 public:
 	static SDL_Texture* LoadTexture(const char* fileName, SDL_Renderer* ren);
+	static void FreeTexture(SDL_Texture* tex);
+	static Animation* 
 };

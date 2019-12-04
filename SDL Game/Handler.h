@@ -16,6 +16,6 @@ public:
 	void ClearHandler();
 	int ObjCount();
 
-	void Update(double);
-	void Render();
+	void Update();
+	void Render(float);
 };

@@ -19,6 +19,7 @@ public:
 	Game();
 	~Game();
 
+	static void LogErr();
 	void Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint32 sHeight, bool fullscreen);
 	void Destroy();
 	void Run();

@@ -21,10 +21,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 	Uint32 flags = 0;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING))
-	{
-		std::cout << "[ERROR]: Something unexpected happened. " << SDL_GetError() << '\n';
-		exit(-1);
-	}
+		Game::LogErr();
 
 	if (fullscreen)
 		flags = SDL_WINDOW_FULLSCREEN;
@@ -35,7 +32,12 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 		yPos = SDL_WINDOWPOS_CENTERED;
 
 	window = SDL_CreateWindow(title, xPos, yPos, sWidth, sHeight, flags);
+	
 	renderer = SDL_CreateRenderer(window, -1, 0);
+	if (!renderer)
+		Game::LogErr();
+
+	handler = new Handler();
 
 	running = true;  // immediately start the game for now
 }
@@ -48,6 +50,7 @@ void Game::Destroy()
 
 void Game::Update()
 {
+	handler->Update();
 }
 
 void Game::Render(float dt)
@@ -56,7 +59,6 @@ void Game::Render(float dt)
 	SDL_RenderClear(renderer);
 
 	// render code here
-
 
 	SDL_RenderPresent(renderer);
 }
@@ -116,4 +118,10 @@ void Game::Run()
 bool Game::isRunning()
 {
 	return running;
+}
+
+void Game::LogErr()
+{
+	std::cout << "[ERROR]: " << SDL_GetError() << '\n';
+	exit(-1);
 }

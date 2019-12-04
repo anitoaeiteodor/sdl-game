@@ -9,6 +9,6 @@ private:
 
 public:
 	GameObjID GetID();
-	virtual void Update(double);
-	virtual void Render();
+	virtual void Update();
+	virtual void Render(float);
 };
