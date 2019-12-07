@@ -1,6 +1,7 @@
 #include <iostream>
 #include <chrono>
 #include "Game.h"
+#include "Animation.h"
 
 Game::Game()
 {
@@ -15,6 +16,8 @@ Game::~Game()
 {
 	
 }
+
+Animation* player;
 
 void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint32 sHeight, bool fullscreen)
 {
@@ -40,6 +43,9 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 	handler = new Handler();
 
 	running = true;  // immediately start the game for now
+
+	player = new Animation(renderer);
+	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\idle.png)", 4, 160, 160, 300);
 }
 
 void Game::Destroy()
@@ -53,12 +59,16 @@ void Game::Update()
 	handler->Update();
 }
 
+SDL_Rect playerPos = { 100, 100, 260, 260 };
+
 void Game::Render(float dt)
 {
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 0);
 	SDL_RenderClear(renderer);
 
+
 	// render code here
+	SDL_RenderCopy(renderer, player->GetNextFrame(dt), nullptr, &playerPos);
 
 	SDL_RenderPresent(renderer);
 }

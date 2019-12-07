@@ -1,16 +1,19 @@
 #pragma once
-
-#include <SDL_image.h>
+#include <SDL.h>
 #include <vector>
+
 
 class Animation {
 private:
-	int nFrames;
-	int currFrame;
+	SDL_Renderer* renderer;
 	std::vector<SDL_Texture*> frames;
+	int currFrame;
+	float speed;
+	float acc;
+
 public:
-	Animation();
+	Animation(SDL_Renderer* ren);
 	~Animation();
-	SDL_Texture* NextFrame();
-	void CreateAnimation();
+	void CreateFrames(const char* path, int nFrames, int width, int height, float speed);
+	SDL_Texture* GetNextFrame(float dt);
 };
