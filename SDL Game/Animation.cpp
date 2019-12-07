@@ -14,32 +14,26 @@ Animation::Animation(SDL_Renderer* ren)
 Animation::~Animation()
 {
 	for (auto& frame : frames)
-		TextureManager::FreeTexture(frame);
+		SDL_DestroyTexture(frame);
 	frames.clear();
 }
 
-void Animation::CreateFrames(const char* path, int nFrames, int width, int height, float speed)
+void Animation::CreateFrames(const char* path, int rows, int cols, int width, int height, float speed)
 {
-	//SDL_Texture* tex = TextureManager::LoadTexture(R"(assets\Sprites\Player\Sword\Defence0\idle1.png)", renderer);
-	//frames.push_back(tex);
-	//tex = TextureManager::LoadTexture(R"(assets\Sprites\Player\Sword\Defence0\idle2.png)", renderer);
-	//frames.push_back(tex);
-	//tex = TextureManager::LoadTexture(R"(assets\Sprites\Player\Sword\Defence0\idle3.png)", renderer);
-	//frames.push_back(tex);
-	//tex = TextureManager::LoadTexture(R"(assets\Sprites\Player\Sword\Defence0\idle4.png)", renderer);
-	//frames.push_back(tex);
-
 	SDL_Surface* spriteSheet = TextureManager::LoadSurface(path);
 	if (!spriteSheet)
 		Game::LogErr();
 
-	for (int i = 0; i < nFrames; i++)
+	for (int i = 0; i < rows; i++)
 	{
-		SDL_Surface* surf = TextureManager::CropSurface(spriteSheet, i * width, 0, width, height);
-		SDL_Texture* frame = SDL_CreateTextureFromSurface(renderer, surf);
+		for (int j = 0; j < cols; j++)
+		{
+			SDL_Surface* surf = TextureManager::CropSurface(spriteSheet, i * width, j * height, width, height);
+			SDL_Texture* frame = SDL_CreateTextureFromSurface(renderer, surf);
 
-		frames.push_back(frame);
-		SDL_FreeSurface(surf);
+			frames.push_back(frame);
+			SDL_FreeSurface(surf);
+		}
 	}
 
 	this->speed = speed;
@@ -52,7 +46,7 @@ SDL_Texture* Animation::GetNextFrame(float dt)
 	if (acc >= speed)
 	{
 		currFrame++;
-		if (currFrame == frames.size() - 1)
+		if (currFrame == frames.size())
 			currFrame = 0;
 		frame = frames[currFrame];
 		acc = 0;

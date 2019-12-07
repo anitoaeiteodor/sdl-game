@@ -45,7 +45,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 	running = true;  // immediately start the game for now
 
 	player = new Animation(renderer);
-	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\idle.png)", 4, 160, 160, 300);
+	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\walk.png)", 2, 2, 160, 160, 300);
 }
 
 void Game::Destroy()
@@ -59,13 +59,12 @@ void Game::Update()
 	handler->Update();
 }
 
-SDL_Rect playerPos = { 100, 100, 260, 260 };
+SDL_Rect playerPos = { 100, 100, 160, 160 };
 
 void Game::Render(float dt)
 {
 	SDL_SetRenderDrawColor(renderer, 200, 200, 200, 0);
 	SDL_RenderClear(renderer);
-
 
 	// render code here
 	SDL_RenderCopy(renderer, player->GetNextFrame(dt), nullptr, &playerPos);

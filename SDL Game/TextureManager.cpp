@@ -26,7 +26,9 @@ SDL_Surface* TextureManager::CropSurface(SDL_Surface* spriteSheet, int x, int y,
 		spriteSheet->format->Gmask, spriteSheet->format->Bmask, spriteSheet->format->Amask);
 
 	SDL_Rect rect = { x, y, width, height };
-	SDL_BlitSurface(spriteSheet, &rect, surface, nullptr);
+
+	if (SDL_BlitSurface(spriteSheet, &rect, surface, nullptr))
+		Game::LogErr();
 
 	if (!surface)
 		Game::LogErr();
@@ -41,14 +43,3 @@ SDL_Surface* TextureManager::LoadSurface(const char* fileName)
 	return surf;
 }
 
-void TextureManager::FreeTexture(SDL_Texture* tex)
-{
-	if (tex)
-		SDL_DestroyTexture(tex);
-}
-
-void TextureManager::FreeSurface(SDL_Surface* surf)
-{
-	if (surf)
-		SDL_FreeSurface(surf);
-}
