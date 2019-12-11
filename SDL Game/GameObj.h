@@ -8,7 +8,7 @@ private:
 	GameObjID id;
 
 public:
-	GameObjID GetID();
-	virtual void Update();
-	virtual void Render(float);
+	virtual GameObjID GetID() = 0;
+	virtual void Update() = 0;
+	virtual void Render(float) = 0;
 };

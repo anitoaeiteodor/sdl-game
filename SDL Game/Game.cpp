@@ -45,7 +45,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 	running = true;  // immediately start the game for now
 
 	player = new Animation(renderer);
-	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\walk.png)", 2, 2, 160, 160, 300);
+	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\attack.png)", 2, 2, 160, 160, 5);
 }
 
 void Game::Destroy()
@@ -67,7 +67,7 @@ void Game::Render(float dt)
 	SDL_RenderClear(renderer);
 
 	// render code here
-	SDL_RenderCopy(renderer, player->GetNextFrame(dt), nullptr, &playerPos);
+	SDL_RenderCopyEx(renderer, player->GetNextFrame(dt), nullptr, &playerPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
 
 	SDL_RenderPresent(renderer);
 }
@@ -97,30 +97,27 @@ void Game::HandleEvents()
 
 void Game::Run()
 {
-	using namespace std::chrono_literals;
-	using clock = std::chrono::high_resolution_clock;
-	using std::chrono::nanoseconds;
+	const int TICKS_PER_SECOND = 60;
+	const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+	const int MAX_FRAMESKIP = 5;
 
-	nanoseconds const timestep(1ms); // fixed timestep
-	nanoseconds lag(0ns);
-	auto timeStart = clock::now();
+	Uint32 nextGameTick = SDL_GetTicks();
+	int loops;
+	float interpolation;
 
 	while (isRunning()) {
-		auto deltaTime = clock::now() - timeStart;
-		timeStart = clock::now();
-		lag += std::chrono::duration_cast<nanoseconds>(deltaTime);
-
 		HandleEvents();
+		loops = 0;
+		while (SDL_GetTicks() > nextGameTick && loops < MAX_FRAMESKIP) {
+			Update();
 
-		// update game logic as lag permits
-		while (lag >= timestep) {
-			lag -= timestep;
-			Update(); // update at a fixed rate each time
+			nextGameTick += SKIP_TICKS;
+			loops++;
 		}
 
-		// calculate how close or far we are from the next timestep
-		auto alpha = (float)lag.count() / timestep.count();
-		Render(alpha);
+		interpolation = float(SDL_GetTicks() + SKIP_TICKS - nextGameTick)
+			/ float(SKIP_TICKS);
+		Render(interpolation);
 	}
 }
 
