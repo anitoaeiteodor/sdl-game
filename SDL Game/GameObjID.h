@@ -1,6 +1,6 @@
 #pragma once
 
-enum GameObjID
+enum class GameObjID
 {
 	GameObjPlayer, GameObjMonster
 };

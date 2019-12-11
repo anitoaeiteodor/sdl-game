@@ -5,6 +5,9 @@
 #include "TextureManager.h"
 
 class Game {
+public:
+	static int WINDOW_WIDTH;
+	static int WINDOW_HEIGHT;
 private:
 	SDL_Window* window;
 	SDL_Renderer* renderer;

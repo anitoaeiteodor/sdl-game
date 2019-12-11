@@ -140,6 +140,7 @@
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Handler.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextureManager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -148,6 +149,7 @@
     <ClInclude Include="GameObj.h" />
     <ClInclude Include="GameObjID.h" />
     <ClInclude Include="Handler.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="TextureManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

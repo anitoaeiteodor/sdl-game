@@ -4,8 +4,11 @@
 #include "GameObjID.h"
 
 class GameObj {
-private:
+protected:
+	SDL_Renderer* renderer;
 	GameObjID id;
+	int posX, posY;
+	int sizeX, sizeY;
 
 public:
 	virtual GameObjID GetID() = 0;

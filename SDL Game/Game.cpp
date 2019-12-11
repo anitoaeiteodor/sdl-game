@@ -2,6 +2,12 @@
 #include <chrono>
 #include "Game.h"
 #include "Animation.h"
+#include "Player.h"
+
+int Game::WINDOW_HEIGHT;
+int Game::WINDOW_WIDTH;
+
+Player* player;
 
 Game::Game()
 {
@@ -17,10 +23,11 @@ Game::~Game()
 	
 }
 
-Animation* player;
-
 void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint32 sHeight, bool fullscreen)
 {
+	WINDOW_HEIGHT = sHeight;
+	WINDOW_WIDTH = sWidth;
+
 	Uint32 flags = 0;
 
 	if (SDL_Init(SDL_INIT_EVERYTHING))
@@ -44,8 +51,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 
 	running = true;  // immediately start the game for now
 
-	player = new Animation(renderer);
-	player->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\attack.png)", 2, 2, 160, 160, 5);
+	player = new Player(renderer, 200, 200, 160, 160);
 }
 
 void Game::Destroy()
@@ -57,6 +63,7 @@ void Game::Destroy()
 void Game::Update()
 {
 	handler->Update();
+	player->Update();
 }
 
 SDL_Rect playerPos = { 100, 100, 160, 160 };
@@ -67,7 +74,7 @@ void Game::Render(float dt)
 	SDL_RenderClear(renderer);
 
 	// render code here
-	SDL_RenderCopyEx(renderer, player->GetNextFrame(dt), nullptr, &playerPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
+	player->Render(dt);
 
 	SDL_RenderPresent(renderer);
 }
@@ -77,6 +84,19 @@ void Game::HandleEvents()
 	SDL_Event event;
 	if (SDL_PollEvent(&event))
 	{
+		const Uint8* keys = SDL_GetKeyboardState(nullptr);
+		int speedX = 0;
+		int speedY = 0;
+
+		if (keys[SDL_SCANCODE_A])
+			speedX -= 10;
+		if (keys[SDL_SCANCODE_D])
+			speedX += 10;
+		if (keys[SDL_SCANCODE_W])
+			speedY -= 10;
+		if (keys[SDL_SCANCODE_S])
+			speedY += 10;
+
 		switch (event.type)
 		{
 		case SDL_QUIT:
@@ -92,6 +112,8 @@ void Game::HandleEvents()
 		default:
 			break;
 		}
+
+		player->SetSpeed(speedX, speedY);
 	}
 }
 
