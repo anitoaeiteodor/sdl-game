@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "TextureManager.h"
+#include <iostream>
 
 Player::Player(SDL_Renderer* rend, int posX, int posY, int sizeX, int sizeY)
 {
@@ -10,12 +11,11 @@ Player::Player(SDL_Renderer* rend, int posX, int posY, int sizeX, int sizeY)
 	this->sizeY = sizeY;
 	speedX = 0;
 	speedY = 0;
-	tex = TextureManager::LoadTexture(R"(assets\Sprites\Player\Sword\Defence0\idle.png)", renderer);
+	CreateAnimationSystem();
 }
 
 Player::~Player()
 {
-	SDL_DestroyTexture(tex);
 }
 
 GameObjID Player::GetID()
@@ -25,6 +25,16 @@ GameObjID Player::GetID()
 
 void Player::Update()
 {
+	if (speedX || speedY)
+	{
+		anSys->ProcessInput(Command::RUN);
+		//std::cout << "Running\n";
+	}
+	else
+	{
+		anSys->ProcessInput(Command::IDLE);
+		//std::cout << "Idle\n";
+	}
 	int newPosX = posX + speedX;
 	int newPosY = posY + speedY;
 
@@ -34,15 +44,51 @@ void Player::Update()
 		posY = newPosY;
 }
 
+SDL_RendererFlip prevFlip;
+
 void Player::Render(float dt)
 {
 	SDL_Rect playerPos = { posX - sizeX/2, posY - sizeY/2, sizeX, sizeY };
 	SDL_Rect pos = { 0, 0, 160, 160 };
-	SDL_RenderCopy(renderer, tex, &pos, &playerPos);
+	if (speedX > 0)
+	{
+		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, SDL_FLIP_NONE);
+		prevFlip = SDL_FLIP_NONE;
+	}
+	else if (speedX < 0)
+	{
+		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
+		prevFlip = SDL_FLIP_HORIZONTAL;
+	}
+	else 
+		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, prevFlip);
 }
 
 void Player::SetSpeed(int speedX, int speedY)
 {
 	this->speedX = speedX;
 	this->speedY = speedY;
+}
+
+SDL_Texture* Player::GetTex()
+{
+	return anSys->GetNextFrame();
+}
+
+void Player::CreateAnimationSystem()
+{
+	// temporary
+	Animation* idle = new Animation(renderer);
+	Animation* run = new Animation(renderer);
+	idle->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\idle.png)", 2, 2, 160, 160, 10);
+	run->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\walk.png)", 2, 2, 160, 160, 10);
+	
+	anSys = new AnimationSystem(2);
+	anSys->AddAnimation(idle);
+	anSys->AddAnimation(run);
+	
+	anSys->AddTrigger(0, 1, Command::RUN);
+	anSys->AddTrigger(1, 1, Command::RUN);
+	anSys->AddTrigger(0, 0, Command::IDLE);
+	anSys->AddTrigger(1, 0, Command::IDLE);
 }

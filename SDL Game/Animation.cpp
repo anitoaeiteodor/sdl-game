@@ -38,7 +38,7 @@ void Animation::CreateFrames(const char* path, int rows, int cols, int width, in
 	this->fps = fps;
 }
 
-SDL_Texture* Animation::GetNextFrame(float dt)
+SDL_Texture* Animation::GetNextFrame()
 {
 	int frameToDraw = ((SDL_GetTicks() - timeStart) * fps / 1000) % (int)frames.size();
 	SDL_Texture* frame = frames[frameToDraw];
