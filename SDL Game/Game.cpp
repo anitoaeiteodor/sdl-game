@@ -95,8 +95,8 @@ void Game::HandleEvents()
 	if (SDL_PollEvent(&event))
 	{
 		const Uint8* keys = SDL_GetKeyboardState(nullptr);
-		int speedX = 0;
-		int speedY = 0;
+		float speedX = 0;
+		float speedY = 0;
 
 		if (keys[SDL_SCANCODE_A])
 			speedX -= 10;
@@ -127,7 +127,7 @@ void Game::HandleEvents()
 				if (xCoord < xPlayer)
 					theta += M_PI;
 
-				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, 10 * cos(theta), 10 * sin(theta), R"(assets\Sprites\Bows\fire_arrow.png)"));
+				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, (float)(10 * cos(theta)), (float)(10 * sin(theta)), R"(assets\Sprites\Bows\fire_arrow.png)"));
 				std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 				break;
 			}

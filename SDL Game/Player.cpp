@@ -35,8 +35,8 @@ void Player::Update()
 		anSys->ProcessInput(Command::IDLE);
 		//std::cout << "Idle\n";
 	}
-	int newPosX = posX + speedX;
-	int newPosY = posY + speedY;
+	float newPosX = posX + speedX;
+	float newPosY = posY + speedY;
 
 	if (newPosX - sizeX/2 > 0 && newPosX + sizeX/2 < Game::WINDOW_WIDTH)
 		posX = newPosX;
@@ -48,8 +48,8 @@ SDL_RendererFlip prevFlip;
 
 void Player::Render(float dt)
 {
-	SDL_Rect playerPos = { posX - sizeX/2, posY - sizeY/2, sizeX, sizeY };
-	SDL_Rect pos = { 0, 0, 160, 160 };
+	SDL_Rect playerPos = { (int)(posX - sizeX / 2), (int)(posY - sizeY / 2), (int)sizeX, (int)sizeY };
+	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
 	if (speedX > 0)
 	{
 		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, SDL_FLIP_NONE);

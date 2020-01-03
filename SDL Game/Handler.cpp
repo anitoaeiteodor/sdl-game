@@ -46,7 +46,9 @@ int Handler::ObjCount()
 void Handler::Update()
 {
 	for (auto& obj : handler)
+	{
 		obj->Update();
+	}
 }
 
 void Handler::Render(float dt)

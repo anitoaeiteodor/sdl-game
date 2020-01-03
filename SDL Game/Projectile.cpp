@@ -30,8 +30,8 @@ void Projectile::Update()
 
 void Projectile::Render(float dt)
 {
-	SDL_Rect projPos = { posX - sizeX / 2, posY - sizeY / 2, sizeX, sizeY };
-	SDL_Rect pos = { 0, 0, sizeX, sizeY };
+	SDL_Rect projPos = { (int)(posX - sizeX / 2), (int)(posY - sizeY / 2), (int)sizeX, (int)sizeY };
+	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
 
 	if (speedX > 0)
 		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, 0, nullptr, SDL_FLIP_NONE);
