@@ -13,7 +13,10 @@ AnimationSystem::AnimationSystem(int nodes)
 AnimationSystem::~AnimationSystem()
 {
 	for (auto& anim : nodes)
+	{
 		delete anim;
+		anim = 0;
+	}
 	triggers.clear();
 	nodes.clear();
 }
@@ -27,7 +30,7 @@ void AnimationSystem::AddTrigger(Uint16 src, Uint16 dst, Command action)
 {
 	Uint32 hash = (src << 16) | (Uint16)action;
 	triggers[hash] = dst;
-	std::cout << hash << ' ' << dst << '\n';
+	//std::cout << hash << ' ' << dst << '\n';
 }
 
 void AnimationSystem::ProcessInput(Command com)
@@ -35,12 +38,16 @@ void AnimationSystem::ProcessInput(Command com)
 	Uint32 hash = (currentNode << 16) | (Uint16)com;
 	if (triggers[hash])
 	{
-		std::cout << hash << '\n';
+		//std::cout << hash << '\n';
 		currentNode = triggers[hash];
-		std::cout << "Changed animation to " << currentNode << " node\n";
+		//std::cout << "Changed animation to " << currentNode << " node\n";
 	}
 	else
+	{
+		//std::cout << hash << '\n';
 		currentNode = 0;
+		//std::cout << "Changed animation to " << currentNode << " node\n";
+	}
 }
 
 SDL_Texture* AnimationSystem::GetNextFrame()

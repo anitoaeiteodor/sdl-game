@@ -13,7 +13,10 @@ Animation::Animation(SDL_Renderer* ren)
 Animation::~Animation()
 {
 	for (auto& frame : frames)
+	{
 		SDL_DestroyTexture(frame);
+		frame = 0;
+	}
 	frames.clear();
 }
 

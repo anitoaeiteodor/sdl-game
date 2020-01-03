@@ -3,6 +3,7 @@
 #include "Game.h"
 #include "Animation.h"
 #include "Player.h"
+#include "Projectile.h"
 
 int Game::WINDOW_HEIGHT;
 int Game::WINDOW_WIDTH;
@@ -49,21 +50,30 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 
 	handler = new Handler();
 
+	// testing code after this line
+
 	running = true;  // immediately start the game for now
 
 	player = new Player(renderer, 200, 200, 160, 160);
+	handler->AddObj(player);
+	//handler->AddObj(new Projectile(renderer, 0, 0, 30, 80, 5, 5, R"(assets\Sprites\Bows\fire_arrow.png)"));
 }
 
 void Game::Destroy()
 {
 	SDL_DestroyRenderer(renderer);
 	SDL_DestroyWindow(window);
+
+	if (handler)
+	{
+		delete handler;
+		handler = 0;
+	}
 }
 
 void Game::Update()
 {
 	handler->Update();
-	player->Update();
 }
 
 SDL_Rect playerPos = { 100, 100, 160, 160 };
@@ -74,7 +84,7 @@ void Game::Render(float dt)
 	SDL_RenderClear(renderer);
 
 	// render code here
-	player->Render(dt);
+	handler->Render(dt);
 
 	SDL_RenderPresent(renderer);
 }
@@ -104,10 +114,25 @@ void Game::HandleEvents()
 			std::cout << "Quitting game...\n";
 			break;
 		case SDL_MOUSEBUTTONDOWN:
-			std::cout << "Mouse pressed\n";
-			break;
+			{
+				std::cout << "Mouse pressed\n";
+				int xCoord, yCoord;
+				SDL_GetMouseState(&xCoord, &yCoord);
+
+				float xPlayer = player->GetPosX();
+				float yPlayer = player->GetPosY();
+
+				double theta = atan(((float)yCoord - yPlayer) / ((float)xCoord - xPlayer));
+
+				if (xCoord < xPlayer)
+					theta += M_PI;
+
+				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, 10 * cos(theta), 10 * sin(theta), R"(assets\Sprites\Bows\fire_arrow.png)"));
+				std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
+				break;
+			}
 		case SDL_MOUSEBUTTONUP:
-			std::cout << "Mouse up\n";
+			//std::cout << "Mouse up\n";
 			break;
 		default:
 			break;
@@ -119,26 +144,27 @@ void Game::HandleEvents()
 
 void Game::Run()
 {
-	const int TICKS_PER_SECOND = 60;
-	const int SKIP_TICKS = 1000 / TICKS_PER_SECOND;
-	const int MAX_FRAMESKIP = 5;
+	const Uint32 TICKS_PER_SECOND = 60;
+	const Uint32 SKIP_TICKS = 1000 / TICKS_PER_SECOND;
+	const Uint32 MAX_FRAMESKIP = 5;
 
 	Uint32 nextGameTick = SDL_GetTicks();
-	int loops;
+	Uint32 loops;
 	float interpolation;
 
-	while (isRunning()) {
+	while (isRunning()) 
+	{
 		HandleEvents();
 		loops = 0;
-		while (SDL_GetTicks() > nextGameTick && loops < MAX_FRAMESKIP) {
+		while (SDL_GetTicks() > nextGameTick && loops < MAX_FRAMESKIP) 
+		{
 			Update();
 
 			nextGameTick += SKIP_TICKS;
 			loops++;
 		}
 
-		interpolation = float(SDL_GetTicks() + SKIP_TICKS - nextGameTick)
-			/ float(SKIP_TICKS);
+		interpolation = float(SDL_GetTicks() + SKIP_TICKS - nextGameTick) / float(SKIP_TICKS);
 		Render(interpolation);
 	}
 }

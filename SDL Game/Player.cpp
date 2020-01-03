@@ -2,7 +2,7 @@
 #include "TextureManager.h"
 #include <iostream>
 
-Player::Player(SDL_Renderer* rend, int posX, int posY, int sizeX, int sizeY)
+Player::Player(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY)
 {
 	renderer = rend;
 	this->posX = posX;
@@ -40,7 +40,7 @@ void Player::Update()
 
 	if (newPosX - sizeX/2 > 0 && newPosX + sizeX/2 < Game::WINDOW_WIDTH)
 		posX = newPosX;
-	if (newPosY - sizeY/2 > 0 && newPosY + sizeY/2 < Game::WINDOW_HEIGHT)
+	if (newPosY - sizeY/2 > 0 && newPosY + sizeY/2  < Game::WINDOW_HEIGHT)
 		posY = newPosY;
 }
 
@@ -64,7 +64,22 @@ void Player::Render(float dt)
 		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, prevFlip);
 }
 
-void Player::SetSpeed(int speedX, int speedY)
+float Player::GetPosX()
+{
+	return posX;
+}
+
+float Player::GetPosY()
+{
+	return posY;
+}
+
+bool Player::CheckCollision(GameObj* other)
+{
+	return false;
+}
+
+void Player::SetSpeed(float speedX, float speedY)
 {
 	this->speedX = speedX;
 	this->speedY = speedY;
@@ -80,8 +95,8 @@ void Player::CreateAnimationSystem()
 	// temporary
 	Animation* idle = new Animation(renderer);
 	Animation* run = new Animation(renderer);
-	idle->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\idle.png)", 2, 2, 160, 160, 10);
-	run->CreateFrames(R"(assets\Sprites\Player\Sword\Defence0\walk.png)", 2, 2, 160, 160, 10);
+	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 10);
+	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 10);
 	
 	anSys = new AnimationSystem(2);
 	anSys->AddAnimation(idle);

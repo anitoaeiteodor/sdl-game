@@ -7,6 +7,12 @@ Handler::Handler()
 
 Handler::~Handler()
 {
+	for (auto& obj : handler)
+		if (obj)
+		{
+			delete obj;
+			obj = 0;
+		}
 	handler.clear();
 }
 
@@ -34,7 +40,7 @@ void Handler::ClearHandler()
 
 int Handler::ObjCount()
 {
-	return handler.size();
+	return (int)handler.size();
 }
 
 void Handler::Update()

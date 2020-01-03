@@ -6,16 +6,20 @@
 #include "AnimationSystem.h"
 
 class Player : public GameObj {
-	int speedX, speedY;
+	float speedX, speedY;
 	AnimationSystem* anSys;
 public:
-	Player(SDL_Renderer* rend, int posX, int posY, int sizeX, int sizeY);
+	Player(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY);
 	~Player();
 
 	GameObjID GetID() override;
 	void Update() override;
 	void Render(float dt) override;
-	void SetSpeed(int speedX, int speedY);
+	float GetPosX() override;
+	float GetPosY() override;
+	bool CheckCollision(GameObj* other) override;
+
+	void SetSpeed(float speedX, float speedY);
 private:
 	SDL_Texture* GetTex();
 	void CreateAnimationSystem();
