@@ -98,14 +98,18 @@ void Game::HandleEvents()
 		float speedX = 0;
 		float speedY = 0;
 
+		int xCoord, yCoord;
+		SDL_GetMouseState(&xCoord, &yCoord);
+		player->SetMousePos(xCoord, yCoord);
+
 		if (keys[SDL_SCANCODE_A])
-			speedX -= 10;
+			speedX -= 5;
 		if (keys[SDL_SCANCODE_D])
-			speedX += 10;
+			speedX += 5;
 		if (keys[SDL_SCANCODE_W])
-			speedY -= 10;
+			speedY -= 5;
 		if (keys[SDL_SCANCODE_S])
-			speedY += 10;
+			speedY += 5;
 
 		switch (event.type)
 		{
@@ -116,8 +120,6 @@ void Game::HandleEvents()
 		case SDL_MOUSEBUTTONDOWN:
 			{
 				std::cout << "Mouse pressed\n";
-				int xCoord, yCoord;
-				SDL_GetMouseState(&xCoord, &yCoord);
 
 				float xPlayer = player->GetPosX();
 				float yPlayer = player->GetPosY();
@@ -127,7 +129,7 @@ void Game::HandleEvents()
 				if (xCoord < xPlayer)
 					theta += M_PI;
 
-				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, (float)(10 * cos(theta)), (float)(10 * sin(theta)), R"(assets\Sprites\Bows\fire_arrow.png)"));
+				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 80, (float)(10 * cos(theta)), (float)(10 * sin(theta)), (theta + M_PI / 2) * 57.29577, R"(assets\Sprites\Bows\regular_arrow.png)"));
 				std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 				break;
 			}

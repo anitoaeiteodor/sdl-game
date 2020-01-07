@@ -16,5 +16,7 @@ public:
 	virtual void Render(float) = 0;
 	virtual float GetPosX() = 0;
 	virtual float GetPosY() = 0;
+	virtual float GetSizeX() = 0;
+	virtual float GetSizeY() = 0;
 	virtual bool CheckCollision(GameObj* other) = 0;
 };

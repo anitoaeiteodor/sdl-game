@@ -9,6 +9,8 @@ Player::Player(SDL_Renderer* rend, float posX, float posY, float sizeX, float si
 	this->posY = posY;
 	this->sizeX = sizeX;
 	this->sizeY = sizeY;
+	mousePosX = 0;
+	mousePosY = 0;
 	speedX = 0;
 	speedY = 0;
 	CreateAnimationSystem();
@@ -44,24 +46,20 @@ void Player::Update()
 		posY = newPosY;
 }
 
-SDL_RendererFlip prevFlip;
 
 void Player::Render(float dt)
 {
-	SDL_Rect playerPos = { (int)(posX - sizeX / 2), (int)(posY - sizeY / 2), (int)sizeX, (int)sizeY };
+	float posXAux = posX + speedX * dt;
+	float posYAux = posY + speedY * dt;
+
+	SDL_Rect playerPos = { (int)(posXAux - sizeX / 2), (int)(posYAux - sizeY / 2), (int)sizeX, (int)sizeY };
 	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
-	if (speedX > 0)
-	{
-		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, SDL_FLIP_NONE);
-		prevFlip = SDL_FLIP_NONE;
-	}
-	else if (speedX < 0)
-	{
-		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
-		prevFlip = SDL_FLIP_HORIZONTAL;
-	}
-	else 
-		SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, prevFlip);
+
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	if (posX > mousePosX)
+		flip = SDL_FLIP_HORIZONTAL;
+
+	SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, flip);
 }
 
 float Player::GetPosX()
@@ -74,6 +72,16 @@ float Player::GetPosY()
 	return posY;
 }
 
+float Player::GetSizeX()
+{
+	return sizeX;
+}
+
+float Player::GetSizeY()
+{
+	return sizeY;
+}
+
 bool Player::CheckCollision(GameObj* other)
 {
 	return false;
@@ -83,6 +91,23 @@ void Player::SetSpeed(float speedX, float speedY)
 {
 	this->speedX = speedX;
 	this->speedY = speedY;
+}
+
+void Player::SetMousePos(int x, int y)
+{
+	mousePosX = x;
+	mousePosY = y;
+}
+
+void Player::FireProj(int xCoord, int yCoord)
+{
+	//double theta = atan(((float)yCoord - yPlayer) / ((float)xCoord - xPlayer));
+
+	//if (xCoord < xPlayer)
+	//	theta += M_PI;
+
+	//handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, (float)(10 * cos(theta)), (float)(10 * sin(theta)), R"(assets\Sprites\Bows\fire_arrow.png)"));
+	//std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 }
 
 SDL_Texture* Player::GetTex()

@@ -1,7 +1,8 @@
 #include "Projectile.h"
 #include "TextureManager.h"
+#include <iostream>
 
-Projectile::Projectile(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY, float speedX, float speedY, const char* tex)
+Projectile::Projectile(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY, float speedX, float speedY, double angle, const char* tex)
 {
 	renderer = rend;
 	this->posX = posX;
@@ -10,6 +11,8 @@ Projectile::Projectile(SDL_Renderer* rend, float posX, float posY, float sizeX, 
 	this->sizeY = sizeY;
 	this->speedX = speedX;
 	this->speedY = speedY;
+	this->angle = angle;
+	std::cout << angle << '\n';
 	sprite = TextureManager::LoadTexture(tex, renderer);
 }
 
@@ -30,13 +33,17 @@ void Projectile::Update()
 
 void Projectile::Render(float dt)
 {
-	SDL_Rect projPos = { (int)(posX - sizeX / 2), (int)(posY - sizeY / 2), (int)sizeX, (int)sizeY };
+	float posXAux = posX + speedX * dt;
+	float posYAux = posY + speedY * dt;
+
+	SDL_Rect projPos = { (int)(posXAux - sizeX / 2), (int)(posYAux - sizeY / 2),
+		(int)(sizeX * .75f), (int)(sizeY * .75f) };
 	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
 
 	if (speedX > 0)
-		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, 0, nullptr, SDL_FLIP_NONE);
+		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, angle, nullptr, SDL_FLIP_NONE);
 	else if (speedX < 0)
-		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
+		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, angle, nullptr, SDL_FLIP_HORIZONTAL);
 
 }
 
@@ -53,6 +60,16 @@ float Projectile::GetPosX()
 float Projectile::GetPosY()
 {
 	return posY;
+}
+
+float Projectile::GetSizeX()
+{
+	return sizeX;
+}
+
+float Projectile::GetSizeY()
+{
+	return sizeY;
 }
 
 bool Projectile::CheckCollision(GameObj* other)

@@ -1,4 +1,6 @@
 #include "Handler.h"
+#include "Game.h"
+#include <iostream>
 
 Handler::Handler()
 {
@@ -30,6 +32,7 @@ void Handler::RemoveObj(GameObj* obj)
 			break;
 		pos++;
 	}
+	delete handler[pos];
 	handler.erase(handler.begin() + pos);
 }
 
@@ -45,14 +48,34 @@ int Handler::ObjCount()
 
 void Handler::Update()
 {
+	std::vector<GameObj*> toDestroy;
 	for (auto& obj : handler)
 	{
+		if (IsOutOfBounds(obj))
+			toDestroy.push_back(obj);
 		obj->Update();
 	}
+
+	for (auto& destr : toDestroy)
+	{
+		std::cout << "Deleted " << destr->GetPosX() << ' ' << destr->GetPosY() << '\n';
+		RemoveObj(destr);
+	}
+	toDestroy.clear();
 }
 
 void Handler::Render(float dt)
 {
 	for (auto& obj : handler)
 		obj->Render(dt);
+}
+
+bool Handler::IsOutOfBounds(GameObj* obj)
+{
+	float posX = obj->GetPosX();
+	float posY = obj->GetPosY();
+	
+	if (posX > Game::WINDOW_WIDTH || posX < 0 || posY < 0 || posY > Game::WINDOW_HEIGHT)
+		return true;
+	return false;
 }

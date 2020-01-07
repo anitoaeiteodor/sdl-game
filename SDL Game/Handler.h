@@ -18,4 +18,6 @@ public:
 
 	void Update();
 	void Render(float);
+private:
+	bool IsOutOfBounds(GameObj* obj);
 };

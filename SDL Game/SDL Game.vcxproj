@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="Animation.h" />
     <ClInclude Include="AnimationSystem.h" />
+    <ClInclude Include="Bow.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObj.h" />
     <ClInclude Include="GameObjID.h" />
