@@ -2,17 +2,17 @@
 #include "TextureManager.h"
 #include <iostream>
 
-Projectile::Projectile(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY, float speedX, float speedY, double angle, const char* tex)
+Projectile::Projectile(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, const char* tex)
 {
 	renderer = rend;
-	this->posX = posX;
-	this->posY = posY;
-	this->sizeX = sizeX;
-	this->sizeY = sizeY;
-	this->speedX = speedX;
-	this->speedY = speedY;
-	this->angle = angle;
-	std::cout << angle << '\n';
+	this->pos = src;
+	this->size = size;
+	double theta = atan(((float)dest.y - src.y) / ((float)dest.x - src.x));
+	if (dest.x < src.x)
+		theta += M_PI;
+	this->speed = {(float)(10 * cos(theta)), (float)(10 * sin(theta))};
+	this->src = src;
+	this->dest = dest;
 	sprite = TextureManager::LoadTexture(tex, renderer);
 }
 
@@ -27,23 +27,21 @@ Projectile::~Projectile()
 
 void Projectile::Update()
 {
-	posX += speedX;
-	posY += speedY;
+	pos = pos + speed;
 }
 
 void Projectile::Render(float dt)
 {
-	float posXAux = posX + speedX * dt;
-	float posYAux = posY + speedY * dt;
+	Vector2D posAux = pos + speed * dt;
 
-	SDL_Rect projPos = { (int)(posXAux - sizeX / 2), (int)(posYAux - sizeY / 2),
-		(int)(sizeX * .75f), (int)(sizeY * .75f) };
-	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
+	SDL_Rect projPos = { (int)(posAux.x - size.x / 2), (int)(posAux.y - size.y / 2),
+		(int)(size.x * .75f), (int)(size.y * .75f) };
+	SDL_Rect pos = { 0, 0, (int)size.x, (int)size.y };
 
-	if (speedX > 0)
-		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, angle, nullptr, SDL_FLIP_NONE);
-	else if (speedX < 0)
-		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, angle, nullptr, SDL_FLIP_HORIZONTAL);
+	if (speed.x > 0)
+		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, 0, nullptr, SDL_FLIP_NONE);
+	else if (speed.x < 0)
+		SDL_RenderCopyEx(renderer, sprite, &pos, &projPos, 0, nullptr, SDL_FLIP_HORIZONTAL);
 
 }
 
@@ -52,25 +50,16 @@ GameObjID Projectile::GetID()
 	return GameObjID();
 }
 
-float Projectile::GetPosX()
+Vector2D Projectile::GetPos()
 {
-	return posX;
+	return pos;
 }
 
-float Projectile::GetPosY()
+Vector2D Projectile::GetSize()
 {
-	return posY;
+	return size;
 }
 
-float Projectile::GetSizeX()
-{
-	return sizeX;
-}
-
-float Projectile::GetSizeY()
-{
-	return sizeY;
-}
 
 bool Projectile::CheckCollision(GameObj* other)
 {

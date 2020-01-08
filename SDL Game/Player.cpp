@@ -2,22 +2,20 @@
 #include "TextureManager.h"
 #include <iostream>
 
-Player::Player(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY)
+Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 {
 	renderer = rend;
-	this->posX = posX;
-	this->posY = posY;
-	this->sizeX = sizeX;
-	this->sizeY = sizeY;
-	mousePosX = 0;
-	mousePosY = 0;
-	speedX = 0;
-	speedY = 0;
+	this->pos = pos;
+	this->size = size;
+	mousePos.x = mousePos.y = 0;
+	speed.x = speed.y = 0;
 	CreateAnimationSystem();
 }
 
 Player::~Player()
 {
+	delete anSys;
+	anSys = 0;
 }
 
 GameObjID Player::GetID()
@@ -27,7 +25,7 @@ GameObjID Player::GetID()
 
 void Player::Update()
 {
-	if (speedX || speedY)
+	if (speed.x || speed.y)
 	{
 		anSys->ProcessInput(Command::RUN);
 		//std::cout << "Running\n";
@@ -37,49 +35,38 @@ void Player::Update()
 		anSys->ProcessInput(Command::IDLE);
 		//std::cout << "Idle\n";
 	}
-	float newPosX = posX + speedX;
-	float newPosY = posY + speedY;
+	Vector2D newPos = pos + speed;
 
-	if (newPosX - sizeX/2 > 0 && newPosX + sizeX/2 < Game::WINDOW_WIDTH)
-		posX = newPosX;
-	if (newPosY - sizeY/2 > 0 && newPosY + sizeY/2  < Game::WINDOW_HEIGHT)
-		posY = newPosY;
+	if (newPos.x - size.x/2 > 0 && newPos.x + size.x/2 < Game::WINDOW_WIDTH)
+		pos.x = newPos.x;
+	if (newPos.y - size.y/2 > 0 && newPos.y + size.y/2  < Game::WINDOW_HEIGHT)
+		pos.y = newPos.y;
 }
 
 
 void Player::Render(float dt)
 {
-	float posXAux = posX + speedX * dt;
-	float posYAux = posY + speedY * dt;
+	Vector2D posAux = pos + speed * dt;
 
-	SDL_Rect playerPos = { (int)(posXAux - sizeX / 2), (int)(posYAux - sizeY / 2), (int)sizeX, (int)sizeY };
-	SDL_Rect pos = { 0, 0, (int)sizeX, (int)sizeY };
+	SDL_Rect playerPos = { (int)(posAux.x - size.x / 2), (int)(posAux.y - size.y / 2),
+		(int)size.x, (int)size.y };
+	SDL_Rect pos = { 0, 0, (int)size.x, (int)size.y };
 
 	SDL_RendererFlip flip = SDL_FLIP_NONE;
-	if (posX > mousePosX)
+	if (posAux.x > mousePos.x)
 		flip = SDL_FLIP_HORIZONTAL;
 
 	SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, flip);
 }
 
-float Player::GetPosX()
+Vector2D Player::GetPos()
 {
-	return posX;
+	return pos;
 }
 
-float Player::GetPosY()
+Vector2D Player::GetSize()
 {
-	return posY;
-}
-
-float Player::GetSizeX()
-{
-	return sizeX;
-}
-
-float Player::GetSizeY()
-{
-	return sizeY;
+	return size;
 }
 
 bool Player::CheckCollision(GameObj* other)
@@ -87,19 +74,17 @@ bool Player::CheckCollision(GameObj* other)
 	return false;
 }
 
-void Player::SetSpeed(float speedX, float speedY)
+void Player::SetSpeed(Vector2D speed)
 {
-	this->speedX = speedX;
-	this->speedY = speedY;
+	this->speed = speed;
 }
 
-void Player::SetMousePos(int x, int y)
+void Player::SetMousePos(Vector2D pos)
 {
-	mousePosX = x;
-	mousePosY = y;
+	mousePos = pos;
 }
 
-void Player::FireProj(int xCoord, int yCoord)
+void Player::FireProj(Vector2D dest)
 {
 	//double theta = atan(((float)yCoord - yPlayer) / ((float)xCoord - xPlayer));
 

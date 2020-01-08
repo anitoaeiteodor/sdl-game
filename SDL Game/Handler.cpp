@@ -58,7 +58,8 @@ void Handler::Update()
 
 	for (auto& destr : toDestroy)
 	{
-		std::cout << "Deleted " << destr->GetPosX() << ' ' << destr->GetPosY() << '\n';
+		Vector2D pos = destr->GetPos();
+		std::cout << "Deleted " << pos.x << ' ' << pos.y << '\n';
 		RemoveObj(destr);
 	}
 	toDestroy.clear();
@@ -72,10 +73,9 @@ void Handler::Render(float dt)
 
 bool Handler::IsOutOfBounds(GameObj* obj)
 {
-	float posX = obj->GetPosX();
-	float posY = obj->GetPosY();
+	Vector2D pos = obj->GetPos();
 	
-	if (posX > Game::WINDOW_WIDTH || posX < 0 || posY < 0 || posY > Game::WINDOW_HEIGHT)
+	if (pos.x > Game::WINDOW_WIDTH || pos.x < 0 || pos.y < 0 || pos.y > Game::WINDOW_HEIGHT)
 		return true;
 	return false;
 }

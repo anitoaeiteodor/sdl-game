@@ -3,7 +3,7 @@
 #include "Game.h"
 #include "Animation.h"
 #include "Player.h"
-#include "Projectile.h"
+#include "Arrow.h"
 
 int Game::WINDOW_HEIGHT;
 int Game::WINDOW_WIDTH;
@@ -54,7 +54,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 
 	running = true;  // immediately start the game for now
 
-	player = new Player(renderer, 200, 200, 160, 160);
+	player = new Player(renderer, { 200, 200 }, { 160, 160 });
 	handler->AddObj(player);
 	//handler->AddObj(new Projectile(renderer, 0, 0, 30, 80, 5, 5, R"(assets\Sprites\Bows\fire_arrow.png)"));
 }
@@ -100,7 +100,8 @@ void Game::HandleEvents()
 
 		int xCoord, yCoord;
 		SDL_GetMouseState(&xCoord, &yCoord);
-		player->SetMousePos(xCoord, yCoord);
+		Vector2D mousePos = { xCoord, yCoord };
+		player->SetMousePos(mousePos);
 
 		if (keys[SDL_SCANCODE_A])
 			speedX -= 5;
@@ -121,16 +122,10 @@ void Game::HandleEvents()
 			{
 				std::cout << "Mouse pressed\n";
 
-				float xPlayer = player->GetPosX();
-				float yPlayer = player->GetPosY();
+				Vector2D playerPos = player->GetPos();
 
-				double theta = atan(((float)yCoord - yPlayer) / ((float)xCoord - xPlayer));
-
-				if (xCoord < xPlayer)
-					theta += M_PI;
-
-				handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 80, (float)(10 * cos(theta)), (float)(10 * sin(theta)), (theta + M_PI / 2) * 57.29577, R"(assets\Sprites\Bows\regular_arrow.png)"));
-				std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
+				handler->AddObj(new Arrow(renderer, { 30.0f, 80.0f }, { playerPos.x, playerPos.y }, { (float)xCoord, (float)yCoord }, 20.0f, R"(assets\Sprites\Bows\regular_arrow.png)"));
+				//std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 				break;
 			}
 		case SDL_MOUSEBUTTONUP:
@@ -140,7 +135,7 @@ void Game::HandleEvents()
 			break;
 		}
 
-		player->SetSpeed(speedX, speedY);
+		player->SetSpeed({ speedX, speedY });
 	}
 }
 

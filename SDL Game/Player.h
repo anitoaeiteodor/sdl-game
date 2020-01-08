@@ -6,27 +6,24 @@
 #include "AnimationSystem.h"
 
 class Player : public GameObj {
-	float speedX, speedY;
-	int mousePosX, mousePosY;
-	float bowPosX, bowPosY;
+	Vector2D speed;
+	Vector2D mousePos;
 
 	AnimationSystem* anSys;
 public:
-	Player(SDL_Renderer* rend, float posX, float posY, float sizeX, float sizeY);
+	Player(SDL_Renderer* rend, Vector2D pos, Vector2D size);
 	~Player();
 
 	GameObjID GetID() override;
 	void Update() override;
 	void Render(float dt) override;
-	float GetPosX() override;
-	float GetPosY() override;
-	float GetSizeX() override;
-	float GetSizeY() override;
+	Vector2D GetPos() override;
+	Vector2D GetSize() override;
 	bool CheckCollision(GameObj* other) override;
 
-	void SetSpeed(float speedX, float speedY);
-	void SetMousePos(int x, int y);
-	void FireProj(int x, int y);
+	void SetSpeed(Vector2D speed);
+	void SetMousePos(Vector2D pos);
+	void FireProj(Vector2D dest);
 private:
 	SDL_Texture* GetTex();
 	void CreateAnimationSystem();
