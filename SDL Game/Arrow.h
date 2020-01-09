@@ -13,4 +13,8 @@ public:
 	void Update() override;
 	void Render(float dt) override;
 	GameObjID GetID() override;
+
+	static const char* arrowSpritePath;
+	static Vector2D arrowSize;
 };
+

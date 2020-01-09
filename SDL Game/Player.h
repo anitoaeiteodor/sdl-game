@@ -4,10 +4,13 @@
 #include "Animation.h"
 #include "Game.h"
 #include "AnimationSystem.h"
+#include "Bow.h"
+#include "RegularBow.h"
 
 class Player : public GameObj {
 	Vector2D speed;
 	Vector2D mousePos;
+	Bow* bow;
 
 	AnimationSystem* anSys;
 public:
@@ -23,7 +26,8 @@ public:
 
 	void SetSpeed(Vector2D speed);
 	void SetMousePos(Vector2D pos);
-	void FireProj(Vector2D dest);
+	void SetBow(Bow* bow);
+	Arrow* FireArrow(Vector2D dest);
 private:
 	SDL_Texture* GetTex();
 	void CreateAnimationSystem();

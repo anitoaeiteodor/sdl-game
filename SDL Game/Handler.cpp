@@ -20,6 +20,8 @@ Handler::~Handler()
 
 void Handler::AddObj(GameObj* obj)
 {
+	if (!obj)
+		return;
 	handler.push_back(obj);
 }
 

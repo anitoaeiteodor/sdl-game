@@ -1,5 +1,8 @@
 #include "Arrow.h"
 
+const char* Arrow::arrowSpritePath = R"(assets\Sprites\Bows\regular_arrow.png)";
+Vector2D Arrow::arrowSize = { 30, 80 };
+
 Arrow::Arrow(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, float dmg, const char* tex)
 	: Projectile(rend, size, src, dest, tex)
 {

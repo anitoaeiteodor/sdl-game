@@ -100,7 +100,7 @@ void Game::HandleEvents()
 
 		int xCoord, yCoord;
 		SDL_GetMouseState(&xCoord, &yCoord);
-		Vector2D mousePos = { xCoord, yCoord };
+		Vector2D mousePos = { (float)xCoord, (float)yCoord };
 		player->SetMousePos(mousePos);
 
 		if (keys[SDL_SCANCODE_A])
@@ -123,8 +123,7 @@ void Game::HandleEvents()
 				std::cout << "Mouse pressed\n";
 
 				Vector2D playerPos = player->GetPos();
-
-				handler->AddObj(new Arrow(renderer, { 30.0f, 80.0f }, { playerPos.x, playerPos.y }, { (float)xCoord, (float)yCoord }, 20.0f, R"(assets\Sprites\Bows\regular_arrow.png)"));
+				handler->AddObj(player->FireArrow(mousePos));
 				//std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 				break;
 			}

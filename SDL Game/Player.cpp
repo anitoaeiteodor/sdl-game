@@ -10,6 +10,8 @@ Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 	mousePos.x = mousePos.y = 0;
 	speed.x = speed.y = 0;
 	CreateAnimationSystem();
+
+	this->bow = new RegularBow(rend, pos, { 30.0f, 30.0f }, nullptr, 1.0f);
 }
 
 Player::~Player()
@@ -41,6 +43,8 @@ void Player::Update()
 		pos.x = newPos.x;
 	if (newPos.y - size.y/2 > 0 && newPos.y + size.y/2  < Game::WINDOW_HEIGHT)
 		pos.y = newPos.y;
+
+	bow->UpdatePos(pos);
 }
 
 
@@ -84,15 +88,14 @@ void Player::SetMousePos(Vector2D pos)
 	mousePos = pos;
 }
 
-void Player::FireProj(Vector2D dest)
+Arrow* Player::FireArrow(Vector2D dest)
 {
-	//double theta = atan(((float)yCoord - yPlayer) / ((float)xCoord - xPlayer));
+	return bow->FireArrow(dest);
+}
 
-	//if (xCoord < xPlayer)
-	//	theta += M_PI;
-
-	//handler->AddObj(new Projectile(renderer, xPlayer, yPlayer, 30, 30, (float)(10 * cos(theta)), (float)(10 * sin(theta)), R"(assets\Sprites\Bows\fire_arrow.png)"));
-	//std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
+void Player::SetBow(Bow* bow)
+{
+	this->bow = bow;
 }
 
 SDL_Texture* Player::GetTex()

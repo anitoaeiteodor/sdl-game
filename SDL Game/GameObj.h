@@ -1,7 +1,10 @@
 #pragma once
 #include <SDL.h>
 
-#include "GameObjID.h"
+enum class GameObjID
+{
+	Player, Monster, Arrow, Bow
+};
 
 struct Vector2D {
 	float x, y;

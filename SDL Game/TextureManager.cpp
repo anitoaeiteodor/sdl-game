@@ -4,6 +4,8 @@
 
 SDL_Texture* TextureManager::LoadTexture(const char* fileName, SDL_Renderer* ren)
 {
+	if (!fileName)
+		return nullptr;
 	SDL_Surface* surf = IMG_Load(fileName);
 	if (!surf)
 		Game::LogErr();
