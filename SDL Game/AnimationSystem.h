@@ -19,4 +19,5 @@ public:
 	void AddTrigger(Uint16 src, Uint16 dst, Command action);
 	void ProcessInput(Command com);
 	SDL_Texture* GetNextFrame();
+	Uint16 GetCurrentNode();
 };

@@ -1,6 +1,14 @@
 #pragma once
 #include <SDL.h>
 
+enum class State {
+	Walk, Idle
+};
+
+enum class Orientation {
+	Left, Right
+};
+
 enum class GameObjID
 {
 	Player, Monster, Arrow, Bow

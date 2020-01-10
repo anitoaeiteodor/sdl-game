@@ -10,10 +10,10 @@ public:
 		const char* tex,float reloadSpeed);
 
 	Arrow* FireArrow(Vector2D dest) override;
-	void UpdatePos(Vector2D pos) override;
+	void UpdateByPlayer(Vector2D pos, Orientation ori, double theta) override;
 	GameObjID GetID();
-	void Update();
 	void Render(float);
+	void Update();
 	Vector2D GetPos();
 	Vector2D GetSize();
 	bool CheckCollision(GameObj* other);

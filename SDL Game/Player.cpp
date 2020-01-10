@@ -11,7 +11,7 @@ Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 	speed.x = speed.y = 0;
 	CreateAnimationSystem();
 
-	this->bow = new RegularBow(rend, pos, { 30.0f, 30.0f }, nullptr, 1.0f);
+	this->bow = new RegularBow(rend, pos, Bow::bowSize, R"(assets\Sprites\Bows\regular_bow.png)", .5f);
 }
 
 Player::~Player()
@@ -27,24 +27,43 @@ GameObjID Player::GetID()
 
 void Player::Update()
 {
+	Vector2D* offset;
+	Orientation ori = Orientation::Right;
+
+	Vector2D newPos = pos + speed;
+
+	if (newPos.x - size.x / 2 > 0 && newPos.x + size.x / 2 < Game::WINDOW_WIDTH)
+		pos.x = newPos.x;
+	if (newPos.y - size.y / 2 > 0 && newPos.y + size.y / 2 < Game::WINDOW_HEIGHT)
+		pos.y = newPos.y;
+
+	double theta = 0;
 	if (speed.x || speed.y)
 	{
 		anSys->ProcessInput(Command::RUN);
-		//std::cout << "Running\n";
+		offset = Bow::bowOffsetWalk;
+		theta = Bow::bowOffsetAngleWalk[anSys->GetCurrentNode()];
 	}
 	else
 	{
 		anSys->ProcessInput(Command::IDLE);
-		//std::cout << "Idle\n";
+		offset = Bow::bowOffsetIdle;
 	}
-	Vector2D newPos = pos + speed;
+	Vector2D bowPos;
+	int frame = anSys->GetCurrentNode();
+	if (mousePos.x < pos.x)
+	{
+		ori = Orientation::Left;
+		bowPos = { pos.x - offset[frame].x, pos.y + offset[frame].y };
+	}
+	else
+	{
+		ori = Orientation::Right;
+		bowPos = { pos.x + offset[frame].x, pos.y + offset[frame].y };
+	}
+	std::cout << bowPos.x << ' ' << bowPos.y << '\n';
 
-	if (newPos.x - size.x/2 > 0 && newPos.x + size.x/2 < Game::WINDOW_WIDTH)
-		pos.x = newPos.x;
-	if (newPos.y - size.y/2 > 0 && newPos.y + size.y/2  < Game::WINDOW_HEIGHT)
-		pos.y = newPos.y;
-
-	bow->UpdatePos(pos);
+	bow->UpdateByPlayer(bowPos, ori, theta);
 }
 
 
@@ -61,6 +80,8 @@ void Player::Render(float dt)
 		flip = SDL_FLIP_HORIZONTAL;
 
 	SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, flip);
+
+	bow->Render(dt);
 }
 
 Vector2D Player::GetPos()
@@ -108,8 +129,8 @@ void Player::CreateAnimationSystem()
 	// temporary
 	Animation* idle = new Animation(renderer);
 	Animation* run = new Animation(renderer);
-	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 10);
-	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 10);
+	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 2);
+	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 2);
 	
 	anSys = new AnimationSystem(2);
 	anSys->AddAnimation(idle);

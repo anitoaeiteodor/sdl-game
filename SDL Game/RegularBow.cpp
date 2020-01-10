@@ -16,6 +16,7 @@ Arrow* RegularBow::FireArrow(Vector2D dest)
 {
 	Arrow* arrow = nullptr;
 
+
 	if (latestFire == 0 || (SDL_GetTicks() / 1000.0f - latestFire > reloadSpeed))
 	{
 		latestFire = SDL_GetTicks() / 1000.0f;
@@ -27,25 +28,41 @@ Arrow* RegularBow::FireArrow(Vector2D dest)
 	return arrow;
 }
 
-void RegularBow::UpdatePos(Vector2D pos)
-{
-	this->pos = pos;
-}
-
 GameObjID RegularBow::GetID()
 {
 	return id;
 }
 
-void RegularBow::Update()
+void RegularBow::UpdateByPlayer(Vector2D pos, Orientation ori, double theta)
 {
-	// This object is tied to the player and the player entity is responsible for 
-	// updating its position, nothing to do here
+	this->pos = pos;
+	this->ori = ori;
+	this->renderTheta = theta;
 }
-
+#include <iostream>
 void RegularBow::Render(float)
 {
-	// to do...
+	SDL_RendererFlip flip = SDL_FLIP_NONE;
+	double theta = 0;
+
+	Vector2D screenSize = { size.x * .5f, size.y * .5f };
+	//if (playerState == State::Walk)
+	//	theta = Bow::bowOffsetAngleWalk[anFrame];
+
+	SDL_Rect screenPos = { (int)(pos.x - screenSize.x/2), (int)(pos.y - screenSize.y/2),
+		(int)screenSize.x, (int)screenSize.y };
+	SDL_Rect spriteRect = { 0, 0, (int)size.x, (int)size.y };
+
+	if (ori == Orientation::Left)
+	{
+		flip = SDL_FLIP_HORIZONTAL;
+	}
+
+	SDL_RenderCopyEx(renderer, sprite, &spriteRect, &screenPos, renderTheta, nullptr, flip);
+}
+
+void RegularBow::Update()
+{
 }
 
 Vector2D RegularBow::GetPos()

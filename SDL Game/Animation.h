@@ -13,5 +13,6 @@ public:
 	Animation(SDL_Renderer* ren);
 	~Animation();
 	void CreateFrames(const char* path, int rows, int cols, int width, int height, int fps);
+	int GetCurrentFrame();
 	SDL_Texture* GetNextFrame();
 };

@@ -139,6 +139,7 @@
     <ClCompile Include="Animation.cpp" />
     <ClCompile Include="AnimationSystem.cpp" />
     <ClCompile Include="Arrow.cpp" />
+    <ClCompile Include="Bow.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Handler.cpp" />
     <ClCompile Include="Main.cpp" />

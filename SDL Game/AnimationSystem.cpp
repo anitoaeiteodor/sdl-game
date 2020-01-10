@@ -54,3 +54,8 @@ SDL_Texture* AnimationSystem::GetNextFrame()
 {
 	return nodes[currentNode]->GetNextFrame();
 }
+
+Uint16 AnimationSystem::GetCurrentNode()
+{
+	return nodes[currentNode]->GetCurrentFrame();
+}
