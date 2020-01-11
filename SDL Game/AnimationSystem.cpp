@@ -14,8 +14,9 @@ AnimationSystem::~AnimationSystem()
 {
 	for (auto& anim : nodes)
 	{
-		delete anim;
-		anim = 0;
+		if(anim)
+			delete anim;
+		anim = nullptr;
 	}
 	triggers.clear();
 	nodes.clear();
@@ -40,7 +41,7 @@ void AnimationSystem::ProcessInput(Command com)
 	{
 		//std::cout << hash << '\n';
 		currentNode = triggers[hash];
-		//std::cout << "Changed animation to " << currentNode << " node\n";
+		std::cout << "Changed animation to " << currentNode << " node\n";
 	}
 	else
 	{

@@ -8,19 +8,21 @@ Animation::Animation(SDL_Renderer* ren)
 	renderer = ren;
 	fps = 0;
 	timeStart = SDL_GetTicks();
+	loop = false;
 }
 
 Animation::~Animation()
 {
 	for (auto& frame : frames)
 	{
-		SDL_DestroyTexture(frame);
-		frame = 0;
+		if(frame)
+			SDL_DestroyTexture(frame);
+		frame = nullptr;
 	}
 	frames.clear();
 }
 
-void Animation::CreateFrames(const char* path, int rows, int cols, int width, int height, int fps)
+void Animation::CreateFrames(const char* path, int rows, int cols, int width, int height, int fps, bool loop)
 {
 	SDL_Surface* spriteSheet = TextureManager::LoadSurface(path);
 	if (!spriteSheet)
@@ -37,7 +39,7 @@ void Animation::CreateFrames(const char* path, int rows, int cols, int width, in
 			SDL_FreeSurface(surf);
 		}
 	}
-
+	this->loop = loop;
 	this->fps = fps;
 }
 
@@ -49,7 +51,16 @@ int Animation::GetCurrentFrame()
 
 SDL_Texture* Animation::GetNextFrame()
 {
+	static SDL_Texture* lastFrame = nullptr;
+	if (lastFrame)
+		return lastFrame;
+
 	int frameToDraw = ((SDL_GetTicks() - timeStart) * fps / 1000) % (int)frames.size();
+	if (!loop && frameToDraw == frames.size() - 1)
+	{
+		lastFrame = frames[frameToDraw];
+		return lastFrame;
+	}
 	SDL_Texture* frame = frames[frameToDraw];
 	return frame;
 }

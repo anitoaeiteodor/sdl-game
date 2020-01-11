@@ -15,8 +15,6 @@ RegularBow::RegularBow(SDL_Renderer* rend, Vector2D pos, Vector2D size, const ch
 Arrow* RegularBow::FireArrow(Vector2D dest)
 {
 	Arrow* arrow = nullptr;
-
-
 	if (latestFire == 0 || (SDL_GetTicks() / 1000.0f - latestFire > reloadSpeed))
 	{
 		latestFire = SDL_GetTicks() / 1000.0f;
@@ -39,7 +37,7 @@ void RegularBow::UpdateByPlayer(Vector2D pos, Orientation ori, double theta)
 	this->ori = ori;
 	this->renderTheta = theta;
 }
-#include <iostream>
+
 void RegularBow::Render(float)
 {
 	SDL_RendererFlip flip = SDL_FLIP_NONE;

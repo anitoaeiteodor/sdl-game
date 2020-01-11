@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 enum class Command {
-	IDLE, RUN
+	IDLE, RUN, DEATH
 };
 
 class AnimationSystem {

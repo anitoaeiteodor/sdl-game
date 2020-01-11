@@ -140,6 +140,8 @@
     <ClCompile Include="AnimationSystem.cpp" />
     <ClCompile Include="Arrow.cpp" />
     <ClCompile Include="Bow.cpp" />
+    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="FireBow.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Handler.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -153,6 +155,8 @@
     <ClInclude Include="AnimationSystem.h" />
     <ClInclude Include="Arrow.h" />
     <ClInclude Include="Bow.h" />
+    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="FireBow.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="GameObj.h" />
     <ClInclude Include="Handler.h" />

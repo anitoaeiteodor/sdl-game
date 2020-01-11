@@ -1,5 +1,6 @@
 #include "Player.h"
 #include "TextureManager.h"
+#include "FireBow.h"
 #include <iostream>
 
 Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
@@ -11,13 +12,19 @@ Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 	speed.x = speed.y = 0;
 	CreateAnimationSystem();
 
-	this->bow = new RegularBow(rend, pos, Bow::bowSize, R"(assets\Sprites\Bows\regular_bow.png)", .5f);
+	//this->bow = new RegularBow(rend, pos, Bow::bowSize, R"(assets\Sprites\Bows\regular_bow.png)", .5f);
+	this->bow = new FireBow(rend, pos, Bow::bowSize, R"(assets\Sprites\Bows\fire_bow.png)", .2f);
 }
 
 Player::~Player()
 {
-	delete anSys;
-	anSys = 0;
+	if(anSys)
+		delete anSys;
+	anSys = nullptr;
+	
+	if (bow)
+		delete bow;
+	bow = nullptr;
 }
 
 GameObjID Player::GetID()
@@ -61,7 +68,6 @@ void Player::Update()
 		ori = Orientation::Right;
 		bowPos = { pos.x + offset[frame].x, pos.y + offset[frame].y };
 	}
-	std::cout << bowPos.x << ' ' << bowPos.y << '\n';
 
 	bow->UpdateByPlayer(bowPos, ori, theta);
 }
@@ -114,6 +120,14 @@ Arrow* Player::FireArrow(Vector2D dest)
 	return bow->FireArrow(dest);
 }
 
+void Player::Die()
+{
+	if(bow)
+		delete bow;
+	bow = nullptr;
+	anSys->ProcessInput(Command::DEATH);
+}
+
 void Player::SetBow(Bow* bow)
 {
 	this->bow = bow;
@@ -129,15 +143,21 @@ void Player::CreateAnimationSystem()
 	// temporary
 	Animation* idle = new Animation(renderer);
 	Animation* run = new Animation(renderer);
-	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 2);
-	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 2);
-	
-	anSys = new AnimationSystem(2);
+	Animation* death = new Animation(renderer);
+
+	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 12, true);
+	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 12, true);
+	death->CreateFrames(R"(assets\Sprites\Player\death.png)", 2, 2, 160, 160, 4, false);
+
+	anSys = new AnimationSystem(3);
 	anSys->AddAnimation(idle);
 	anSys->AddAnimation(run);
-	
+	anSys->AddAnimation(death);
+
 	anSys->AddTrigger(0, 1, Command::RUN);
 	anSys->AddTrigger(1, 1, Command::RUN);
 	anSys->AddTrigger(0, 0, Command::IDLE);
 	anSys->AddTrigger(1, 0, Command::IDLE);
+	anSys->AddTrigger(0, 2, Command::DEATH);
+	anSys->AddTrigger(1, 2, Command::DEATH);
 }

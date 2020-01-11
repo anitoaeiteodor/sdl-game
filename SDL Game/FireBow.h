@@ -1,19 +1,16 @@
 #pragma once
 
-#include "Bow.h"
+#include "RegularBow.h"
 
-#define REGULAR_BOW_DMG 10
-#define FIRE_BOW_DMG 2
-
-class RegularBow : public Bow {
+class FireBow : public RegularBow {
 public:
-	RegularBow(SDL_Renderer* rend, Vector2D pos, Vector2D size, 
-		const char* tex ,float reloadSpeed);
+	FireBow(SDL_Renderer* rend, Vector2D pos, Vector2D size,
+		const char* tex, float reloadSpeed);
 
 	Arrow* FireArrow(Vector2D dest) override;
 	void UpdateByPlayer(Vector2D pos, Orientation ori, double theta) override;
 	GameObjID GetID();
-	void Render(float);
+	void Render(float dt);
 	void Update();
 	Vector2D GetPos();
 	Vector2D GetSize();

@@ -101,7 +101,8 @@ void Game::HandleEvents()
 		int xCoord, yCoord;
 		SDL_GetMouseState(&xCoord, &yCoord);
 		Vector2D mousePos = { (float)xCoord, (float)yCoord };
-		player->SetMousePos(mousePos);
+		if(player)
+			player->SetMousePos(mousePos);
 
 		if (keys[SDL_SCANCODE_A])
 			speedX -= 5;
@@ -111,6 +112,16 @@ void Game::HandleEvents()
 			speedY -= 5;
 		if (keys[SDL_SCANCODE_S])
 			speedY += 5;
+		if (keys[SDL_SCANCODE_X])
+		{
+			if (player)
+			{
+				player->Die();
+				handler->RemoveObj(player);
+				player = nullptr;
+			}
+			//delete player;
+		}
 
 		switch (event.type)
 		{
@@ -121,9 +132,8 @@ void Game::HandleEvents()
 		case SDL_MOUSEBUTTONDOWN:
 			{
 				std::cout << "Mouse pressed\n";
-
-				Vector2D playerPos = player->GetPos();
-				handler->AddObj(player->FireArrow(mousePos));
+				if(player)
+					handler->AddObj(player->FireArrow(mousePos));
 				//std::cout << "Coords: " << cos(theta) << ' ' << sin(theta) << '\n';
 				break;
 			}
@@ -134,7 +144,8 @@ void Game::HandleEvents()
 			break;
 		}
 
-		player->SetSpeed({ speedX, speedY });
+		if(player)
+			player->SetSpeed({ speedX, speedY });
 	}
 }
 

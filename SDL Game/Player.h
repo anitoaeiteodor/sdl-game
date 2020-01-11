@@ -28,6 +28,7 @@ public:
 	void SetMousePos(Vector2D pos);
 	void SetBow(Bow* bow);
 	Arrow* FireArrow(Vector2D dest);
+	void Die();
 private:
 	SDL_Texture* GetTex();
 	void CreateAnimationSystem();
