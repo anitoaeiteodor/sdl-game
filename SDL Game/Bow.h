@@ -11,7 +11,7 @@ class Bow : public GameObj {
 protected:
 	float reloadSpeed;
 	float latestFire;
-	float dmg;
+	int dmg;
 	double renderTheta;
 	Orientation ori;
 	Arrows arrowType;

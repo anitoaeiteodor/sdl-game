@@ -3,7 +3,7 @@
 #include "Bow.h"
 
 #define REGULAR_BOW_DMG 10
-#define FIRE_BOW_DMG 2
+#define FIRE_BOW_DMG 5
 
 class RegularBow : public Bow {
 public:
@@ -17,5 +17,4 @@ public:
 	void Update();
 	Vector2D GetPos();
 	Vector2D GetSize();
-	bool CheckCollision(GameObj* other);
 };

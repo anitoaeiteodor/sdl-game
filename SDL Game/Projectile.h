@@ -11,12 +11,11 @@ protected:
 
 public:
 	Projectile(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, const char* tex);
-	~Projectile();
+	virtual ~Projectile();
 
-	void Update() override;
-	void Render(float dt) override;
-	GameObjID GetID() override;
-	Vector2D GetPos() override;
-	Vector2D GetSize() override;
-	bool CheckCollision(GameObj* other) override;
+	virtual void Update() override;
+	virtual void Render(float dt) override;
+	virtual GameObjID GetID() override;
+	virtual Vector2D GetPos() override;
+	virtual Vector2D GetSize() override;
 };

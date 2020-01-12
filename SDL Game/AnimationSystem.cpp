@@ -41,7 +41,9 @@ void AnimationSystem::ProcessInput(Command com)
 	{
 		//std::cout << hash << '\n';
 		currentNode = triggers[hash];
-		std::cout << "Changed animation to " << currentNode << " node\n";
+		if(com == Command::DEATH)
+			nodes[currentNode]->ResetAnimation();
+		//std::cout << "Changed animation to " << currentNode << " node\n";
 	}
 	else
 	{

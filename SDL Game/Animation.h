@@ -10,10 +10,13 @@ private:
 	int fps;
 	int timeStart;
 	bool loop;
+	SDL_Texture* lastFrame;
 public:
 	Animation(SDL_Renderer* ren);
 	~Animation();
+
 	void CreateFrames(const char* path, int rows, int cols, int width, int height, int fps, bool loop);
 	int GetCurrentFrame();
 	SDL_Texture* GetNextFrame();
+	void ResetAnimation();
 };

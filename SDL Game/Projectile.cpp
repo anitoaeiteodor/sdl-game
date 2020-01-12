@@ -47,7 +47,7 @@ void Projectile::Render(float dt)
 
 GameObjID Projectile::GetID()
 {
-	return GameObjID();
+	return id;
 }
 
 Vector2D Projectile::GetPos()
@@ -58,10 +58,4 @@ Vector2D Projectile::GetPos()
 Vector2D Projectile::GetSize()
 {
 	return size;
-}
-
-
-bool Projectile::CheckCollision(GameObj* other)
-{
-	return false;
 }

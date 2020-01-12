@@ -8,6 +8,10 @@ Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 	renderer = rend;
 	this->pos = pos;
 	this->size = size;
+	this->deathTime = 0;
+	collisionPos = { COLLISION_OFFSET_PLAYER_X, COLLISION_OFFSET_PLAYER_Y };
+	collisionSize = { COLLISION_SIZE_PLAYER_X, COLLISION_SIZE_PLAYER_Y };
+
 	mousePos.x = mousePos.y = 0;
 	speed.x = speed.y = 0;
 	CreateAnimationSystem();
@@ -34,6 +38,9 @@ GameObjID Player::GetID()
 
 void Player::Update()
 {
+	if (!IsAlive())
+		return;
+
 	Vector2D* offset;
 	Orientation ori = Orientation::Right;
 
@@ -41,7 +48,7 @@ void Player::Update()
 
 	if (newPos.x - size.x / 2 > 0 && newPos.x + size.x / 2 < Game::WINDOW_WIDTH)
 		pos.x = newPos.x;
-	if (newPos.y - size.y / 2 > 0 && newPos.y + size.y / 2 < Game::WINDOW_HEIGHT)
+	if (newPos.y - size.y / 2 > 0 && newPos.y  + size.y / 2 < Game::WINDOW_HEIGHT)
 		pos.y = newPos.y;
 
 	double theta = 0;
@@ -69,7 +76,8 @@ void Player::Update()
 		bowPos = { pos.x + offset[frame].x, pos.y + offset[frame].y };
 	}
 
-	bow->UpdateByPlayer(bowPos, ori, theta);
+	if(bow)
+		bow->UpdateByPlayer(bowPos, ori, theta);
 }
 
 
@@ -87,22 +95,18 @@ void Player::Render(float dt)
 
 	SDL_RenderCopyEx(renderer, GetTex(), &pos, &playerPos, 0, nullptr, flip);
 
-	bow->Render(dt);
+	if(bow)
+		bow->Render(dt);
 }
 
 Vector2D Player::GetPos()
 {
-	return pos;
+	return pos + collisionPos;
 }
 
 Vector2D Player::GetSize()
 {
-	return size;
-}
-
-bool Player::CheckCollision(GameObj* other)
-{
-	return false;
+	return collisionSize;
 }
 
 void Player::SetSpeed(Vector2D speed)
@@ -117,15 +121,25 @@ void Player::SetMousePos(Vector2D pos)
 
 Arrow* Player::FireArrow(Vector2D dest)
 {
-	return bow->FireArrow(dest);
+	if(bow)
+		return bow->FireArrow(dest);
+	return nullptr;
 }
 
 void Player::Die()
 {
+	deathTime = SDL_GetTicks();
 	if(bow)
 		delete bow;
 	bow = nullptr;
 	anSys->ProcessInput(Command::DEATH);
+}
+
+bool Player::IsAlive()
+{
+	if (!deathTime)
+		return true;
+	return (SDL_GetTicks() - deathTime < PLAYER_DEATH_DELAY);
 }
 
 void Player::SetBow(Bow* bow)
@@ -147,7 +161,7 @@ void Player::CreateAnimationSystem()
 
 	idle->CreateFrames(R"(assets\Sprites\Player\idle\idle_def_0.png)", 2, 2, 160, 160, 12, true);
 	run->CreateFrames(R"(assets\Sprites\Player\walk\walk_def_0.png)", 2, 2, 160, 160, 12, true);
-	death->CreateFrames(R"(assets\Sprites\Player\death.png)", 2, 2, 160, 160, 4, false);
+	death->CreateFrames(R"(assets\Sprites\Player\death.png)", 2, 2, 160, 160, 2, false);
 
 	anSys = new AnimationSystem(3);
 	anSys->AddAnimation(idle);
@@ -160,4 +174,5 @@ void Player::CreateAnimationSystem()
 	anSys->AddTrigger(1, 0, Command::IDLE);
 	anSys->AddTrigger(0, 2, Command::DEATH);
 	anSys->AddTrigger(1, 2, Command::DEATH);
+	anSys->AddTrigger(2, 2, Command::IDLE);
 }

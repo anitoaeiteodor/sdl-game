@@ -9,6 +9,7 @@ Animation::Animation(SDL_Renderer* ren)
 	fps = 0;
 	timeStart = SDL_GetTicks();
 	loop = false;
+	lastFrame = nullptr;
 }
 
 Animation::~Animation()
@@ -32,7 +33,7 @@ void Animation::CreateFrames(const char* path, int rows, int cols, int width, in
 	{
 		for (int j = 0; j < cols; j++)
 		{
-			SDL_Surface* surf = TextureManager::CropSurface(spriteSheet, i * width, j * height, width, height);
+			SDL_Surface* surf = TextureManager::CropSurface(spriteSheet, j * width, i * height, width, height);
 			SDL_Texture* frame = SDL_CreateTextureFromSurface(renderer, surf);
 
 			frames.push_back(frame);
@@ -51,7 +52,6 @@ int Animation::GetCurrentFrame()
 
 SDL_Texture* Animation::GetNextFrame()
 {
-	static SDL_Texture* lastFrame = nullptr;
 	if (lastFrame)
 		return lastFrame;
 
@@ -63,4 +63,9 @@ SDL_Texture* Animation::GetNextFrame()
 	}
 	SDL_Texture* frame = frames[frameToDraw];
 	return frame;
+}
+
+void Animation::ResetAnimation()
+{
+	timeStart = SDL_GetTicks();
 }

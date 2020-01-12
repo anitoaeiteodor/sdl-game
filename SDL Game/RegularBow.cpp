@@ -72,8 +72,3 @@ Vector2D RegularBow::GetSize()
 {
 	return size;
 }
-
-bool RegularBow::CheckCollision(GameObj* other)
-{
-	return false;
-}

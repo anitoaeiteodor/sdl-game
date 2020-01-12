@@ -1,12 +1,16 @@
 #include "Arrow.h"
+#include <iostream>
 
 const char* Arrow::arrowSpritePath = R"(assets\Sprites\Bows\regular_arrow.png)";
 Vector2D Arrow::arrowSize = { 30, 80 };
 
-Arrow::Arrow(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, float dmg, const char* tex)
+Arrow::Arrow(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, int dmg, const char* tex)
 	: Projectile(rend, size, src, dest, tex)
 {
 	this->dmg = dmg;
+	this->id = GameObjID::Arrow;
+	collisionSize = { ARROW_COLLISION_SIZE_X, ARROW_COLLISION_SIZE_Y };
+	collisionPos = pos;
 
 	double theta = atan(((float)dest.y - src.y) / ((float)dest.x - src.x));
 	if (dest.x < src.x)
@@ -19,11 +23,13 @@ Arrow::Arrow(SDL_Renderer* rend, Vector2D size, Vector2D src, Vector2D dest, flo
 
 Arrow::~Arrow()
 {
+
 }
 
 void Arrow::Update()
 {
 	pos = pos + speed;
+	collisionPos = pos;
 }
 
 void Arrow::Render(float dt)
@@ -44,4 +50,19 @@ void Arrow::Render(float dt)
 GameObjID Arrow::GetID()
 {
 	return id;
+}
+
+Vector2D Arrow::GetPos()
+{
+	return collisionPos;
+}
+
+Vector2D Arrow::GetSize()
+{
+	return collisionSize;
+}
+
+int Arrow::GetDmg()
+{
+	return dmg;
 }

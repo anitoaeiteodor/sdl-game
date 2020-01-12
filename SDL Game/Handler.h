@@ -20,4 +20,5 @@ public:
 	void Render(float);
 private:
 	bool IsOutOfBounds(GameObj* obj);
+	bool CheckCollision(GameObj* objA, GameObj* objB);
 };

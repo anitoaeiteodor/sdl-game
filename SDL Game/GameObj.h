@@ -32,6 +32,7 @@ struct Vector2D {
 		ret.y = y * scalar;
 		return ret;
 	}
+
 };
 
 class GameObj {
@@ -42,10 +43,10 @@ protected:
 	Vector2D size;
 
 public:
+	virtual ~GameObj() = 0;
 	virtual GameObjID GetID() = 0;
 	virtual void Update() = 0;
 	virtual void Render(float) = 0;
 	virtual Vector2D GetPos() = 0;
 	virtual Vector2D GetSize() = 0;
-	virtual bool CheckCollision(GameObj* other) = 0;
 };

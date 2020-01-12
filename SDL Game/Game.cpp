@@ -1,14 +1,18 @@
 #include <iostream>
 #include <chrono>
+
 #include "Game.h"
 #include "Animation.h"
 #include "Player.h"
 #include "Arrow.h"
+#include "Enemy.h"
+#include "Spawner.h"
 
 int Game::WINDOW_HEIGHT;
 int Game::WINDOW_WIDTH;
 
 Player* player;
+Spawner *spwA, *spwB, *spwC, *spwD;
 
 Game::Game()
 {
@@ -57,6 +61,23 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 	player = new Player(renderer, { 200, 200 }, { 160, 160 });
 	handler->AddObj(player);
 	//handler->AddObj(new Projectile(renderer, 0, 0, 30, 80, 5, 5, R"(assets\Sprites\Bows\fire_arrow.png)"));
+	//handler->AddObj(new Enemy(renderer, { 500, 500 }, { 160, 160 }));
+	//handler->AddObj(new Enemy(renderer, { 100, 500 }, { 160, 160 }));
+	//handler->AddObj(new Enemy(renderer, { 500, 100 }, { 160, 160 }));
+	//handler->AddObj(new Enemy(renderer, { 100, 100 }, { 160, 160 }));
+
+	spwA = new Spawner(renderer);
+	spwA->AddWaves(R"(levels\lv_01\spawner_a.txt)");
+
+	spwB = new Spawner(renderer);
+	spwB->AddWaves(R"(levels\lv_01\spawner_b.txt)");
+
+	spwC = new Spawner(renderer);
+	spwC->AddWaves(R"(levels\lv_01\spawner_c.txt)");
+
+	spwD = new Spawner(renderer);
+	spwD->AddWaves(R"(levels\lv_01\spawner_d.txt)");
+
 }
 
 void Game::Destroy()
@@ -74,6 +95,10 @@ void Game::Destroy()
 void Game::Update()
 {
 	handler->Update();
+	handler->AddObj(spwA->Spawn());
+	handler->AddObj(spwB->Spawn());
+	//handler->AddObj(spwC->Spawn());
+	//handler->AddObj(spwD->Spawn());
 }
 
 SDL_Rect playerPos = { 100, 100, 160, 160 };
@@ -117,10 +142,8 @@ void Game::HandleEvents()
 			if (player)
 			{
 				player->Die();
-				handler->RemoveObj(player);
 				player = nullptr;
 			}
-			//delete player;
 		}
 
 		switch (event.type)
