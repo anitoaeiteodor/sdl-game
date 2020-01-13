@@ -22,11 +22,16 @@ Skeleton::~Skeleton()
 
 void Skeleton::Update()
 {
-	double theta = atan(((float)playerPos.y - pos.y) / ((float)playerPos.x - pos.x));
-	if (playerPos.x < pos.x)
-		theta += M_PI;
+	if (!playerPos.x == 0)
+	{
+		double theta = atan(((float)playerPos.y - pos.y) / ((float)playerPos.x - pos.x));
+		if (playerPos.x < pos.x)
+			theta += M_PI;
 
-	speed = { (float)(SKELETON_SPEED * cos(theta)), (float)(SKELETON_SPEED * sin(theta)) };
+		speed = { (float)(SKELETON_SPEED * cos(theta)), (float)(SKELETON_SPEED * sin(theta)) };
+	}
+	else if (speed.x == 0 && speed.y == 0)
+		speed = { SKELETON_SPEED, SKELETON_SPEED };
 	
 	Enemy::Update();
 }

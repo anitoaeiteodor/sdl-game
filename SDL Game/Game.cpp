@@ -11,7 +11,6 @@
 int Game::WINDOW_HEIGHT;
 int Game::WINDOW_WIDTH;
 
-Player* player;
 Spawner *spwA, *spwB, *spwC, *spwD;
 
 Game::Game()
@@ -58,13 +57,7 @@ void Game::Init(const char* title, Uint32 xPos, Uint32 yPos, Uint32 sWidth, Uint
 
 	running = true;  // immediately start the game for now
 
-	player = new Player(renderer, { 200, 200 }, { 160, 160 });
-	handler->AddObj(player);
-	//handler->AddObj(new Projectile(renderer, 0, 0, 30, 80, 5, 5, R"(assets\Sprites\Bows\fire_arrow.png)"));
-	//handler->AddObj(new Enemy(renderer, { 500, 500 }, { 160, 160 }));
-	//handler->AddObj(new Enemy(renderer, { 100, 500 }, { 160, 160 }));
-	//handler->AddObj(new Enemy(renderer, { 500, 100 }, { 160, 160 }));
-	//handler->AddObj(new Enemy(renderer, { 100, 100 }, { 160, 160 }));
+	handler->AddObj(new Player(renderer, { 200, 200 }, { 160, 160 }));
 
 	spwA = new Spawner(renderer);
 	spwA->AddWaves(R"(levels\lv_01\spawner_a.txt)");
@@ -96,7 +89,7 @@ void Game::Update()
 {
 	handler->Update();
 	handler->AddObj(spwA->Spawn());
-	handler->AddObj(spwB->Spawn());
+	//handler->AddObj(spwB->Spawn());
 	//handler->AddObj(spwC->Spawn());
 	//handler->AddObj(spwD->Spawn());
 }
@@ -116,6 +109,7 @@ void Game::Render(float dt)
 
 void Game::HandleEvents()
 {
+	Player* player = (Player*)handler->GetPlayer();
 	SDL_Event event;
 	if (SDL_PollEvent(&event))
 	{

@@ -8,11 +8,14 @@
 #include "RegularBow.h"
 
 #define PLAYER_DEATH_DELAY 2000
+#define PLAYER_IMMORTAL_DELAY 2001
 
 #define COLLISION_OFFSET_PLAYER_X -20
 #define COLLISION_OFFSET_PLAYER_Y 10
 #define COLLISION_SIZE_PLAYER_X 40
 #define COLLISION_SIZE_PLAYER_Y 60
+
+#define PLAYER_HEALTH 20
 
 
 class Player : public GameObj {
@@ -21,7 +24,8 @@ class Player : public GameObj {
 	Vector2D collisionPos;
 	Vector2D collisionSize;
 	Bow* bow;
-	double deathTime;
+	int deathTime;
+	int health;
 
 	AnimationSystem* anSys;
 public:
@@ -40,6 +44,7 @@ public:
 	Arrow* FireArrow(Vector2D dest);
 	void Die();
 	bool IsAlive();
+	int TakeDmg(int amount);
 private:
 	SDL_Texture* GetTex();
 	void CreateAnimationSystem();

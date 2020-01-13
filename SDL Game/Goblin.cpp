@@ -22,12 +22,16 @@ Goblin::~Goblin()
 
 void Goblin::Update()
 {
-	double theta = atan(((float)playerPos.y - pos.y) / ((float)playerPos.x - pos.x));
-	if (playerPos.x < pos.x)
-		theta += M_PI;
+	if (!playerPos.x == 0)
+	{
+		double theta = atan(((float)playerPos.y - pos.y) / ((float)playerPos.x - pos.x));
+		if (playerPos.x < pos.x)
+			theta += M_PI;
 
-	speed = { (float)(GOBLIN_SPEED * cos(theta)), (float)(GOBLIN_SPEED * sin(theta)) };
-
+		speed = { (float)(GOBLIN_SPEED * cos(theta)), (float)(GOBLIN_SPEED * sin(theta)) };
+	}
+	else if (speed.x == 0 && speed.y == 0)
+		speed = { GOBLIN_SPEED, GOBLIN_SPEED };
 	Enemy::Update();
 }
 

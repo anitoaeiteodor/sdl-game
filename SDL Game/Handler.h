@@ -18,6 +18,8 @@ public:
 
 	void Update();
 	void Render(float);
+
+	GameObj* GetPlayer();
 private:
 	bool IsOutOfBounds(GameObj* obj);
 	bool CheckCollision(GameObj* objA, GameObj* objB);

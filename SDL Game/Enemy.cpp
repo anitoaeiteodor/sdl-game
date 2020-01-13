@@ -39,7 +39,17 @@ void Enemy::Update()
 
 	anSys->ProcessInput(Command::RUN);
 
-	pos = pos + speed;
+	Vector2D newPos = pos + speed;
+
+	if (newPos.x - size.x / 2 > 0 && newPos.x + size.x / 2 < Game::WINDOW_WIDTH)
+		pos.x = newPos.x;
+	else
+		speed.x = -speed.x;
+	if (newPos.y - size.y / 2 > 0 && newPos.y + size.y / 2 < Game::WINDOW_HEIGHT)
+		pos.y = newPos.y;
+	else
+		speed.y = -speed.y;
+
 }
 
 void Enemy::Render(float dt)

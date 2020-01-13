@@ -57,6 +57,8 @@ int Handler::ObjCount()
 
 void Handler::Update()
 {
+	static int timeSincePlayerHurt = 0;
+
 	Vector2D playerPos = { 0, 0 };
 	for (auto& obj : handler)
 	{
@@ -76,14 +78,32 @@ void Handler::Update()
 		{
 			if (!handler[j])
 				continue;
-			//std::cout << "In collision\n";
-			//if (handler[i]->GetID() == GameObjID::Monster && handler[j]->GetID() == GameObjID::Monster
-			//	&& CheckCollision(handler[i], handler[j]))
-			//{
-			//	//std::cout << "Collision between monster and monster\n";
-			//	monstersColided.insert(handler[i]);
-			//	monstersColided.insert(handler[j]);
-			//}
+
+			if (((handler[i]->GetID() == GameObjID::Player && handler[j]->GetID() == GameObjID::Monster)
+				|| (handler[i]->GetID() == GameObjID::Monster && handler[j]->GetID() == GameObjID::Player))
+				&& CheckCollision(handler[i], handler[j]))
+			{
+				if (SDL_GetTicks() - timeSincePlayerHurt < PLAYER_IMMORTAL_DELAY)
+					continue;
+
+				if (handler[j]->GetID() == GameObjID::Player && ((Player*)handler[j])->IsAlive())
+				{
+					int dmg = ((Enemy*)handler[i])->GetDmg();
+					int health = ((Player*)handler[j])->TakeDmg(dmg);
+					if (health <= 0)
+						((Player*)handler[j])->Die();
+				}
+				else if (handler[i]->GetID() == GameObjID::Player && ((Player*)handler[i])->IsAlive())
+				{
+					int dmg = ((Enemy*)handler[j])->GetDmg();
+					int health = ((Player*)handler[i])->TakeDmg(dmg);
+					if (health <= 0)
+						((Player*)handler[i])->Die();
+				}
+				timeSincePlayerHurt = SDL_GetTicks();
+				std::cout << "Collision between monster and player\n";
+			}
+
 			if (((handler[i]->GetID() == GameObjID::Arrow && handler[j]->GetID() == GameObjID::Monster)
 				|| (handler[i]->GetID() == GameObjID::Monster && handler[j]->GetID() == GameObjID::Arrow))
 				&& CheckCollision(handler[i], handler[j]))
@@ -92,7 +112,7 @@ void Handler::Update()
 				{
 					int dmg = ((Arrow*)handler[i])->GetDmg();
 					int health = ((Enemy*)handler[j])->TakeDmg(dmg);
-					if (health < 0)
+					if (health <= 0)
 						((Enemy*)handler[j])->Die();
 
 					handler[i] = nullptr;
@@ -102,7 +122,7 @@ void Handler::Update()
 				{
 					int dmg = ((Arrow*)handler[j])->GetDmg();
 					int health = ((Enemy*)handler[i])->TakeDmg(dmg);
-					if (health < 0)
+					if (health <= 0)
 						((Enemy*)handler[i])->Die();
 
 					handler[j] = nullptr;
@@ -157,6 +177,15 @@ void Handler::Render(float dt)
 {
 	for (auto& obj : handler)
 		obj->Render(dt);
+}
+
+GameObj* Handler::GetPlayer()
+{
+	Player* res = nullptr;
+	for (auto& obj : handler)
+		if (obj->GetID() == GameObjID::Player)
+			res = (Player*)obj;
+	return res;
 }
 
 bool Handler::IsOutOfBounds(GameObj* obj)

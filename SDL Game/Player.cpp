@@ -9,6 +9,7 @@ Player::Player(SDL_Renderer* rend, Vector2D pos, Vector2D size)
 	this->pos = pos;
 	this->size = size;
 	this->deathTime = 0;
+	this->health = PLAYER_HEALTH;
 	collisionPos = { COLLISION_OFFSET_PLAYER_X, COLLISION_OFFSET_PLAYER_Y };
 	collisionSize = { COLLISION_SIZE_PLAYER_X, COLLISION_SIZE_PLAYER_Y };
 
@@ -38,7 +39,7 @@ GameObjID Player::GetID()
 
 void Player::Update()
 {
-	if (!IsAlive())
+	if (deathTime)
 		return;
 
 	Vector2D* offset;
@@ -48,7 +49,7 @@ void Player::Update()
 
 	if (newPos.x - size.x / 2 > 0 && newPos.x + size.x / 2 < Game::WINDOW_WIDTH)
 		pos.x = newPos.x;
-	if (newPos.y - size.y / 2 > 0 && newPos.y  + size.y / 2 < Game::WINDOW_HEIGHT)
+	if (newPos.y - size.y / 2 > 0 && newPos.y + size.y / 2 < Game::WINDOW_HEIGHT)
 		pos.y = newPos.y;
 
 	double theta = 0;
@@ -140,6 +141,12 @@ bool Player::IsAlive()
 	if (!deathTime)
 		return true;
 	return (SDL_GetTicks() - deathTime < PLAYER_DEATH_DELAY);
+}
+
+int Player::TakeDmg(int amount)
+{
+	health -= amount;
+	return health;
 }
 
 void Player::SetBow(Bow* bow)
